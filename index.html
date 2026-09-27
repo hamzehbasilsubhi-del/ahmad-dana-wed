@@ -3,7 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دعوة زفاف أحمد ودانا | Ahmed & Dana Wedding</title>
+    
+    <!-- Title & Meta Tags for Social Media / WhatsApp Share Preview -->
+    <title>Ahmed & Dana - Wedding Invitation | 01.11.2026 - Palazzo Versace Dubai</title>
+    <meta name="description" content="01.11.2026 - Palazzo Versace Dubai | Ahmed & Dana Wedding Invitation">
+    
+    <!-- Open Graph / WhatsApp Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Ahmed & Dana - Wedding Invitation">
+    <meta property="og:description" content="01.11.2026 - Palazzo Versace Dubai">
+    <meta property="og:image" content="envelope-cover.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ahmed & Dana - Wedding Invitation">
+    <meta name="twitter:description" content="01.11.2026 - Palazzo Versace Dubai">
+    <meta name="twitter:image" content="envelope-cover.jpg">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -93,10 +112,13 @@
 
     <div id="envelope-page" class="fixed inset-0 z-50 bg-[#f4ebdf] flex flex-col items-center justify-center transition-opacity duration-1000 overflow-hidden">
         <div id="video-wrapper" class="w-full max-w-md h-full aspect-9-16 relative overflow-hidden cursor-pointer group" onclick="startOpeningSequence()">
-            <video id="envelope-video" class="w-full h-full object-cover" playsinline muted preload="auto">
+            <!-- غلاف المظروف قبل فتح الفيديو -->
+            <img id="envelope-poster" src="./envelope-cover.jpg" alt="غلاف الدعوة" class="absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-300">
+            
+            <video id="envelope-video" class="w-full h-full object-cover relative z-0" playsinline muted preload="auto">
                 <source src="envelope-opening.mp4#t=0.001" type="video/mp4">
             </video>
-            <div id="tap-hint" data-key="tap-hint" class="absolute bottom-10 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs font-semibold px-5 py-2.5 rounded-full backdrop-blur-sm tracking-wide transition-opacity duration-500 animate-pulse pointer-events-none">
+            <div id="tap-hint" data-key="tap-hint" class="absolute bottom-10 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs font-semibold px-5 py-2.5 rounded-full backdrop-blur-sm tracking-wide transition-opacity duration-500 animate-pulse pointer-events-none z-20">
                 اضغط لفتح الدعوة
             </div>
         </div>
@@ -132,9 +154,16 @@
             </video>
             <div class="absolute inset-0 bg-black/20"></div>
             <div class="relative z-10 space-y-4 px-4 w-full flex flex-col items-center justify-center">
-                <h2 data-key="wedding-title" class="font-body font-normal text-sm md:text-base text-white tracking-wider drop-shadow-md reveal-fade -translate-y-2">
-                    حفل زفاف
-                </h2>
+                <!-- العنوان بالتنسيق المطلوب (سطرين وخطيين مختلفين) -->
+                <div data-key="wedding-header" class="flex flex-col items-center space-y-1 reveal-fade -translate-y-2">
+                    <h1 class="font-bold text-lg md:text-xl text-white tracking-wide drop-shadow-md">
+                        Ahmed & Dana - Wedding Invitation
+                    </h1>
+                    <span class="font-normal text-xs md:text-sm text-white/90 drop-shadow-sm">
+                        01.11.2026 - Palazzo Versace Dubai
+                    </span>
+                </div>
+
                 <div data-key="couples-names" class="font-script text-3xl md:text-4xl text-white font-bold drop-shadow-lg tracking-wider leading-relaxed reveal-fade delay-200 flex flex-col items-center gap-1">
                     <span>أحمد مختار</span>
                     <span class="text-2xl md:text-3xl font-normal py-0.5">&</span>
@@ -347,12 +376,14 @@
             isOpening = true;
 
             const envelopeVideo = document.getElementById('envelope-video');
+            const envelopePoster = document.getElementById('envelope-poster');
             const tapHint = document.getElementById('tap-hint');
             const envelopePage = document.getElementById('envelope-page');
             const mainContent = document.getElementById('main-content');
             const bgMusic = document.getElementById('bg-music');
 
             if (tapHint) tapHint.style.opacity = '0';
+            if (envelopePoster) envelopePoster.style.opacity = '0';
 
             if (bgMusic) {
                 bgMusic.play().catch(error => console.log("الصوت يتطلب تفاعل:", error));
@@ -381,7 +412,7 @@
                 quranSurah: "سورة الروم، الآية (21)",
                 welcomeTitle: "بكل الحب والفرح،",
                 welcomeText: "يسرّنا أن نشارككم بداية أجمل فصول حياتنا،<br>وأن تكونوا معنا لنحتفل بيوم زفافنا.",
-                weddingTitle: "حفل زفاف",
+                weddingHeader: '<h1 class="font-bold text-lg md:text-xl text-white tracking-wide drop-shadow-md">Ahmed & Dana - Wedding Invitation</h1><span class="font-normal text-xs md:text-sm text-white/90 drop-shadow-sm">01.11.2026 - Palazzo Versace Dubai</span>',
                 couplesNames: '<span>أحمد مختار</span><span class="text-2xl md:text-3xl font-normal py-0.5">&</span><span>دانا أبو حويلي</span>',
                 eventDetailsTitle: "تفاصيل الحفل",
                 dateLabel: "التاريخ",
@@ -437,7 +468,7 @@
                 quranSurah: "Surah Ar-Rum [30:21]",
                 welcomeTitle: "",
                 welcomeText: "Together with our families, we joyfully invite you to celebrate our wedding and share with us the beginning of our forever",
-                weddingTitle: "THE WEDDING OF",
+                weddingHeader: '<h1 class="font-bold text-lg md:text-xl text-white tracking-wide drop-shadow-md">Ahmed & Dana - Wedding Invitation</h1><span class="font-normal text-xs md:text-sm text-white/90 drop-shadow-sm">01.11.2026 - Palazzo Versace Dubai</span>',
                 couplesNames: '<span>Ahmed Mokhtar</span><span class="font-en-serif text-2xl md:text-3xl font-light py-0.5">&</span><span>Dana Abu Hawili</span>',
                 eventDetailsTitle: "Wedding Details",
                 dateLabel: "Date",
@@ -543,7 +574,7 @@
             }
 
             document.querySelector('[data-key="welcome-text"]').innerHTML = langData.welcomeText;
-            document.querySelector('[data-key="wedding-title"]').innerText = langData.weddingTitle;
+            document.querySelector('[data-key="wedding-header"]').innerHTML = langData.weddingHeader;
             document.querySelector('[data-key="couples-names"]').innerHTML = langData.couplesNames;
             document.querySelector('[data-key="event-details-title"]').innerText = langData.eventDetailsTitle;
             document.querySelector('[data-key="date-label"]').innerText = langData.dateLabel;
