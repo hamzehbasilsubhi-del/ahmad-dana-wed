@@ -84,7 +84,8 @@
         <source src="background-music.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="fixed top-5 left-5 z-40" dir="ltr">
+    <!-- تم تعديل z-index إلى z-[60] ليبقى الزر ظاهراً فوق الغلاف الخارجي -->
+    <div class="fixed top-5 left-5 z-[60]" dir="ltr">
         <button id="lang-toggle-btn" onclick="toggleLanguage()" class="bg-[#2a1c24]/90 hover:bg-[#2a1c24] border border-[#8C6D46]/50 text-[#d4af37] px-2 py-1.5 rounded-full flex items-center justify-between w-20 h-9 shadow-xl transition-all duration-300 backdrop-blur-md cursor-pointer select-none">
             <span id="lang-circle" class="w-6 h-6 rounded-full border-2 border-[#cbb89d] bg-[#d4af37]/20 flex items-center justify-center transition-all duration-300 transform translate-x-0"></span>
             <span id="lang-text" class="text-xs font-bold font-numbers px-1 text-[#d4af37]">EN</span>
@@ -266,16 +267,17 @@
             </div>
         </section>
 
-        <section class="py-12 px-6 text-center space-y-5 bg-[#f4ebdf]">
+        <!-- تم تحديث هذا القسم: تغيير العنوان والنصوص المصاحبة -->
+        <section class="py-12 px-6 text-center space-y-6 bg-[#f4ebdf]">
             <div class="space-y-3 flex flex-col items-center reveal-up">
-                <h3 data-key="gift-title" class="font-ibm text-lg md:text-xl font-medium text-[#8C6D46]">مشاركة</h3>
+                <h3 data-key="gift-title" class="font-ibm text-lg md:text-xl font-medium text-[#8C6D46]">هدايـــا</h3>
                 <div class="w-12 h-0.5 bg-[#CBB89D]/60 mx-auto rounded-full"></div>
             </div>
 
             <div class="space-y-1">
-                <p data-key="gift-line1" class="text-base font-semibold text-[#5C4D4A] reveal-up delay-100">حضوركم أثمن هدية،</p>
-                <p data-key="gift-line2" class="text-sm text-[#786452] reveal-up delay-200">لكل من حابب يشارك</p>
-                <p data-key="gift-line3" class="text-xs text-[#8C6D46] font-medium pt-1 reveal-up delay-300">تفاصيل الحساب داخل الختم</p>
+                <p data-key="gift-line1" class="text-base font-semibold text-[#5C4D4A] reveal-up delay-100">حضوركم أجمــل وأثمــن هديــة،</p>
+                <p data-key="gift-line2" class="text-sm text-[#786452] reveal-up delay-200">لمن يرغب لائحة الهدايـــا</p>
+                <p data-key="gift-line3" class="text-xs text-[#8C6D46] font-medium pt-1 reveal-up delay-300">متوفرة داخل الختــم</p>
             </div>
 
             <div class="pt-2 flex flex-col items-center reveal-up delay-400">
@@ -408,10 +410,10 @@
                 optNo: "أعتذر لعدم التمكن من الحضور",
                 btnRsvp: "إرسال التأكيد",
                 rsvpSuccessMsg: "شكراً لكم! تم استلام ردكم بنجاح.",
-                giftTitle: "مشاركة",
-                giftLine1: "حضوركم أثمن هدية،",
-                giftLine2: "لكل من حابب يشارك",
-                giftLine3: "تفاصيل الحساب داخل الختم",
+                giftTitle: "هدايـــا",
+                giftLine1: "حضوركم أجمــل وأثمــن هديــة،",
+                giftLine2: "لمن يرغب لائحة الهدايـــا",
+                giftLine3: "متوفرة داخل الختــم",
                 clickHere: "اضغط هنا",
                 bankDetailsHeader: "تفاصيل الحساب البنكي",
                 lblBankName: "اسم البنك:",
@@ -623,7 +625,6 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // دالة الإرسال المباشرة عبر Fetch للـ Google Apps Script (الدعوة الثانية)
         function submitRSVP(event) {
             event.preventDefault();
             const form = document.getElementById('rsvp-form');
