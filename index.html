@@ -222,7 +222,7 @@
             </div>
         </section>
 
-        <section class="py-14 px-6 text-center space-y-6 flex flex-col items-center bg-[#f4ebdf]">
+        <section class="py-14 px-6 text-center space-y-6 bg-[#f4ebdf]">
             <p data-key="countdown-title" class="text-lg md:text-xl text-[#785E3B] font-ibm font-medium tracking-wide reveal-up">باقٍ على فرحتنا</p>
 
             <div class="flex justify-center items-center max-w-xs mx-auto my-2 w-full reveal-up delay-100">
@@ -367,6 +367,7 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylWQIXbXWJ2jTveCEiSIkM1lgyCVf5o60HjciTLweYNtcSbHIpHZhS-fS3r9ZaURH5/exec";
         let isOpening = false;
+        let typingTimeout = null;
 
         function startOpeningSequence() {
             if (isOpening) return;
@@ -386,19 +387,27 @@
                 bgMusic.play().catch(error => console.log("الصوت يتطلب تفاعل:", error));
             }
 
-            envelopeVideo.play().catch(error => {
-                console.log("خطأ في تشغيل الفيديو:", error);
-            });
+            // إظهار المحتوى المباشر فوراً مع معالجة حماية التشغيل
+            mainContent.classList.remove('opacity-0');
+            initScrollObserver();
 
-            envelopeVideo.onended = function() {
+            const transitionToMain = () => {
                 envelopePage.classList.add('opacity-0');
                 setTimeout(() => {
                     envelopePage.style.display = 'none';
-                    mainContent.classList.remove('opacity-0');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                    initScrollObserver();
-                }, 1000);
+                }, 800);
             };
+
+            envelopeVideo.play().then(() => {
+                envelopeVideo.onended = transitionToMain;
+            }).catch(error => {
+                console.log("تعذر تشغيل الفيديو تلقائياً، جاري الانتقال المباشر:", error);
+                transitionToMain();
+            });
+
+            // Fallback safety timeout
+            setTimeout(transitionToMain, 3500);
         }
 
         const translations = {
@@ -417,7 +426,7 @@
                 venueLabel: "المكان",
                 venueVal: "بالاتزو فيرساتشي دبي",
                 timeLabel: "الوقت",
-                timeVal: "٧:٠0 مساءً",
+                timeVal: "٧:٠٠ مساءً",
                 locationAddress: "الجداف، واجهة الجداف المائية، دبي",
                 mapBtn: "افتح على الخريطة",
                 countdownTitle: "باقٍ على فرحتنا",
@@ -531,7 +540,7 @@
                 html.setAttribute('dir', 'ltr');
                 html.setAttribute('lang', 'en');
                 langToggleBtn.style.flexDirection = 'row-reverse';
-                langCircle.style.transform = 'translateX(0px)';
+                langCircle.style.transform = 'translateX(24px)';
                 langText.innerText = 'AR';
                 rsvpForm.classList.remove('text-right');
                 rsvpForm.classList.add('text-left');
@@ -623,6 +632,7 @@
 
             const quoteEl = document.getElementById('typing-quote');
             if (quoteEl) {
+                if (typingTimeout) clearTimeout(typingTimeout);
                 quoteEl.innerText = '';
                 quoteEl.dataset.typed = "false";
                 startTypingEffect(quoteEl, langData.typingQuoteText);
@@ -667,7 +677,7 @@
             const statusText = statusSelect.options[statusSelect.selectedIndex].text;
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "جاري الإرسال...";
+            submitBtn.innerText = currentLang === 'ar' ? "جاري الإرسال..." : "Sending...";
 
             const payload = {
                 name: nameInput,
@@ -701,20 +711,46 @@
 
         function copyIBAN() {
             const ibanText = document.getElementById('iban-text').innerText;
-            navigator.clipboard.writeText(ibanText).then(() => {
-                const copySuccess = document.getElementById('copy-success');
+            const copySuccess = document.getElementById('copy-success');
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(ibanText).then(() => {
+                    showCopySuccess();
+                }).catch(() => fallbackCopy(ibanText));
+            } else {
+                fallbackCopy(ibanText);
+            }
+
+            function fallbackCopy(text) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.opacity = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopySuccess();
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            function showCopySuccess() {
                 copySuccess.classList.remove('hidden');
                 setTimeout(() => {
                     copySuccess.classList.add('hidden');
                 }, 2500);
-            });
+            }
         }
 
         function initScrollObserver() {
             const observerOptions = {
                 root: null,
                 rootMargin: '0px 0px -50px 0px',
-                threshold: 0.15
+                threshold: 0.1
             };
 
             const observer = new IntersectionObserver((entries) => {
@@ -736,6 +772,7 @@
         }
 
         function startTypingEffect(element, text) {
+            if (typingTimeout) clearTimeout(typingTimeout);
             let index = 0;
             element.innerText = '';
             element.classList.add('typing-cursor');
@@ -744,9 +781,9 @@
                 if (index < text.length) {
                     element.innerText += text.charAt(index);
                     index++;
-                    setTimeout(typeNextChar, 100);
+                    typingTimeout = setTimeout(typeNextChar, 80);
                 } else {
-                    setTimeout(() => {
+                    typingTimeout = setTimeout(() => {
                         element.classList.remove('typing-cursor');
                     }, 1000);
                 }
